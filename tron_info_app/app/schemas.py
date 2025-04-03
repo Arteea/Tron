@@ -22,8 +22,4 @@ class WalletInfoResponse(WalletBase):
 
 class WalletLogInfo(WalletBase):
     id: int = Field(description="Id запроса кошелька")
-    timestamp: datetime = Field(description="Дата запроса")
-
-
-class WalletInfoLogList(BaseModel):
-    wallets: list[WalletLogInfo] = Field(description='Список проверенных кошельков')
+    time_stamp: datetime = Field(description="Дата запроса")
