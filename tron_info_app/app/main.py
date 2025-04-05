@@ -28,7 +28,7 @@ app = FastAPI(lifespan=lifespan,
 
 @app.post("/get_wallet_info/", response_model = schemas.WalletInfoResponse)
 async def get_wallet_info(wallet: schemas.WalletBase,
-                    db: Session = Depends(get_database)):
+                    db: AsyncSession = Depends(get_database)):
     
 
     wallet_info =await get_account_details(wallet=wallet,client=client)

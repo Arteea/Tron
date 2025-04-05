@@ -10,6 +10,9 @@ import pytest_asyncio
 from sqlalchemy.ext.asyncio import create_async_engine,AsyncSession
 from sqlalchemy.orm import sessionmaker
 from app.models import WalletInfo,Base
+from app.database import get_database
+from fastapi.testclient import TestClient
+from app.main import app
 
 
 @pytest_asyncio.fixture
@@ -30,3 +33,16 @@ async def get_db_session():
     async with AsyncSessionTest() as test_session:
         yield test_session
         await test_session.close()
+
+@pytest_asyncio.fixture
+async def test_client(get_db_session):
+
+    async def override_get_database():
+        return get_db_session
+    
+    app.dependency_overrides[get_database] = override_get_database
+
+    with TestClient(app) as client:
+        yield client
+
+    app.dependency_overrides.clear()

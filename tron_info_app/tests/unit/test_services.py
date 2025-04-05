@@ -7,7 +7,7 @@ from app.models import WalletInfo
 from sqlalchemy.exc import SQLAlchemyError
 
 
-
+@pytest.mark.unit
 @pytest.mark.parametrize("address,is_valid,expected_error", [
     # Валидные адреса
     ("TLSgRcoeokT8mSB8Fsm9FYw3bAHmCijLkZ", True, None),
@@ -28,12 +28,11 @@ def test_wallet_address_validation(address, is_valid, expected_error):
         assert expected_error in str(exc_info.value)
 
 
-
+@pytest.mark.unit
 @pytest.mark.asyncio
 async def test_log_to_database_success(get_db_session: AsyncSession):
     address='TLSgRcoeokT8mSB8Fsm9FYw3bAHmCijLkZ'
     wallet = WalletBase(address=address)
-    
     result = await log_to_database(wallet=wallet,database=get_db_session)
     
     assert result is True
@@ -44,7 +43,7 @@ async def test_log_to_database_success(get_db_session: AsyncSession):
 
 
 
-
+@pytest.mark.unit
 @pytest.mark.asyncio
 async def test_log_to_database_sql_error(get_db_session: AsyncSession, mocker):
     address='TLSgRcoeokT8mSB8Fsm9FYw3bAHmCijLkZ'
@@ -58,6 +57,7 @@ async def test_log_to_database_sql_error(get_db_session: AsyncSession, mocker):
     assert exc_info.value.status_code == 500
     assert 'Произошла ошибка базы данных' in str(exc_info.value.detail)
 
+@pytest.mark.unit
 @pytest.mark.asyncio
 async def test_log_to_database_common_error(get_db_session: AsyncSession, mocker):
     address='TLSgRcoeokT8mSB8Fsm9FYw3bAHmCijLkZ'
